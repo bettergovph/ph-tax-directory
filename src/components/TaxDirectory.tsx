@@ -92,19 +92,6 @@ const TaxDirectory: React.FC = () => {
       <Navigation />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-blue-600 text-white rounded-full mb-3 sm:mb-4">
-            <Calculator className="w-6 h-6 sm:w-8 sm:h-8" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 px-4">
-            Philippines Tax Directory
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4 leading-relaxed">
-            Your comprehensive guide to Philippine taxation - calculators, forms, deadlines, and resources
-            for individuals, businesses, and organizations.
-          </p>
-        </div>
 
         {/* Dynamic Content */}
         {renderContent()}
