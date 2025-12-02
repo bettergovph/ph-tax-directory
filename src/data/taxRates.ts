@@ -7,13 +7,13 @@ export const TAX_RATES: TaxRate[] = [
     description: 'Progressive tax rates for employees and compensation earners',
     effectiveDate: 'January 1, 2025',
     rates: [
-      { min: 0, max: 250000, rate: 0, baseAmount: 0, description: 'Tax-free bracket' },
-      { min: 250000, max: 400000, rate: 0.20, baseAmount: 0, description: '20% on excess over ₱250,000' },
-      { min: 400000, max: 800000, rate: 0.25, baseAmount: 30000, description: '₱30,000 + 25% on excess over ₱400,000' },
-      { min: 800000, max: 2000000, rate: 0.30, baseAmount: 130000, description: '₱130,000 + 30% on excess over ₱800,000' },
-      { min: 2000000, max: 8000000, rate: 0.32, baseAmount: 490000, description: '₱490,000 + 32% on excess over ₱2,000,000' },
-      { min: 8000000, rate: 0.35, baseAmount: 2410000, description: '₱2,410,000 + 35% on excess over ₱8,000,000' }
-    ]
+      { min: 0, max: 250_000, rate: 0, baseAmount: 0, description: 'Tax-free bracket' },
+      { min: 250_000, max: 400_000, rate: 0.15, baseAmount: 0, description: '15% of the excess over ₱250,000' },
+      { min: 400_000, max: 800_000, rate: 0.20, baseAmount: 22_500, description: '₱22,500 + 20% of the excess over ₱400,000' },
+      { min: 800_000, max: 2_000_000, rate: 0.25, baseAmount: 102_500, description: '₱102,500 + 25% of the excess over ₱800,000' },
+      { min: 2_000_000, max: 8_000_000, rate: 0.30, baseAmount: 402_500, description: '₱402,500+ 30% of the excess over ₱2,000,000' },
+      { min: 8_000_000, rate: 0.35, baseAmount: 2_202_500, description: '₱2,202,500 + 35% of the excess over ₱ 8,000,000' }
+    ] 
   },
   {
     category: 'Income Tax',
