@@ -90,7 +90,7 @@ const Navigation: React.FC = () => {
             {/* Logo/Brand */}
             <div className="flex items-center">
               <img
-                src='/logos/svg/BetterGov_Icon-Primary.svg'
+                src='https://bettergov.ph/logos/svg/BetterGov_Icon-Primary.svg'
                 alt='BetterGov Logo'
                 className='h-12 w-12 mr-3'
               />
@@ -140,7 +140,7 @@ const Navigation: React.FC = () => {
               {/* Mobile Logo/Brand */}
               <div className="flex items-center">
                 <img
-                src='/logos/svg/BetterGov_Icon-Primary.svg'
+                src='https://bettergov.ph/logos/svg/BetterGov_Icon-Primary.svg'
                 alt='BetterGov Logo'
                 className='h-12 w-12 mr-3'
               />

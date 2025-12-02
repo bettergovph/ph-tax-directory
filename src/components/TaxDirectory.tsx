@@ -13,6 +13,7 @@ import FormsLibrary from '@/components/FormsLibrary';
 import FilingCalendar from '@/components/FilingCalendar';
 import TaxRates from '@/components/TaxRates';
 import FAQs from '@/components/FAQs';
+import Footer from './Footer';
 
 const TaxDirectory: React.FC = () => {
   const location = useLocation();
@@ -111,15 +112,8 @@ const TaxDirectory: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <footer className="mt-8 sm:mt-12 text-center py-6 border-t border-gray-200">
-          <div className="text-xs sm:text-sm text-gray-600 px-4">
-            <p className="mb-2">© 2025 Philippines Tax Directory. All rights reserved.</p>
-            <p>Part of <a href="https://www.bettergov.ph/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">BetterGov.ph</a></p>
-          </div>
-        </footer>
       </div>
+      <Footer />
     </div>
   );
 };
