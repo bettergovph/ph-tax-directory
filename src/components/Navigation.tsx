@@ -88,14 +88,21 @@ const Navigation: React.FC = () => {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center justify-between h-16">
             {/* Logo/Brand */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
-                <Calculator className="w-5 h-5 text-white" />
+            <div className="flex items-center">
+              <img
+                src='/logos/svg/BetterGov_Icon-Primary.svg'
+                alt='BetterGov Logo'
+                className='h-12 w-12 mr-3'
+              />
+              <div>
+                <div className='text-black font-bold'>PH Tax Directory</div>
+                <div className='text-xs text-gray-800'>
+                  Open Source tax calculator & directory
+                </div>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
-                PH Tax Directory
-              </span>
             </div>
+
+
 
             {/* Navigation Items */}
             <div className="flex items-center space-x-1">
@@ -131,13 +138,18 @@ const Navigation: React.FC = () => {
           <div className="lg:hidden">
             <div className="flex items-center justify-between h-16">
               {/* Mobile Logo/Brand */}
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
-                  <Calculator className="w-5 h-5 text-white" />
+              <div className="flex items-center">
+                <img
+                src='/logos/svg/BetterGov_Icon-Primary.svg'
+                alt='BetterGov Logo'
+                className='h-12 w-12 mr-3'
+              />
+              <div>
+                <div className='text-black font-bold'>PH Tax Directory</div>
+                <div className='text-xs text-gray-800'>
+                  Open Source tax calculator & directory
                 </div>
-                <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
-                  PH Tax Directory
-                </span>
+              </div>
               </div>
 
               {/* Mobile Menu Button */}
