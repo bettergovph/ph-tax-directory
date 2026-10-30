@@ -1,12 +1,12 @@
 import React from 'react';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import { Calculator, Info } from 'lucide-react';
+import { Navigate, useLocation, useParams, useNavigate } from 'react-router-dom';
+import { Info } from 'lucide-react';
 import { TaxType } from '@/types/tax';
 import { DirectorySection } from '@/types/directory';
 import Navigation from '@/components/Navigation';
 import TaxTypeSelector from '@/components/TaxTypeSelector';
-import CompensationTaxCalculator from '@/components/CompensationTaxCalculator';
-import VATCalculator from '@/components/VATCalculator';
+import IndirectTaxes from '@/components/IndirectTaxes';
+import DirectTaxes from '@/components/DirectTaxes';
 import CustomsDutyCalculator from '@/components/CustomsDutyCalculator';
 import TaxpayerCategories from '@/components/TaxpayerCategories';
 import FormsLibrary from '@/components/FormsLibrary';
@@ -31,11 +31,15 @@ const TaxDirectory: React.FC = () => {
 
   // Determine current tax type from URL parameter or default
   const getCurrentTaxType = (): TaxType => {
-    if (taxType && ['compensation', 'vat', 'customs'].includes(taxType as TaxType)) {
+    if (taxType && ['income', 'indirect', 'customs'].includes(taxType as TaxType)) {
       return taxType as TaxType;
     }
-    return 'compensation';
+    return 'income';
   };
+
+  // Old links: VAT is now a tab of Indirect Taxes, and 'direct' is the Income route.
+  if (taxType === 'vat') return <Navigate to="/tax-calculators/indirect?tax=vat" replace />;
+  if (taxType === 'direct') return <Navigate to="/tax-calculators/income" replace />;
 
   const activeSection = getCurrentSection();
   const selectedTaxType = getCurrentTaxType();
@@ -47,14 +51,14 @@ const TaxDirectory: React.FC = () => {
 
   const renderCalculator = () => {
     switch (selectedTaxType) {
-      case 'compensation':
-        return <CompensationTaxCalculator />;
-      case 'vat':
-        return <VATCalculator />;
+      case 'income':
+        return <DirectTaxes />;
+      case 'indirect':
+        return <IndirectTaxes />;
       case 'customs':
         return <CustomsDutyCalculator />;
       default:
-        return <CompensationTaxCalculator />;
+        return <DirectTaxes />;
     }
   };
 
@@ -92,7 +96,7 @@ const TaxDirectory: React.FC = () => {
       {/* Navigation */}
       <Navigation />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-grow">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-grow">
 
         {/* Dynamic Content */}
         {renderContent()}

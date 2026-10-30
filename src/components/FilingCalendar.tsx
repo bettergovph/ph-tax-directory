@@ -38,16 +38,28 @@ const TAX_DEADLINES: TaxDeadline[] = [
     priority: 'high',
     applicableTo: ['Withholding agents', 'Government agencies']
   },
+
   {
-    id: 'vat-monthly',
-    title: 'Monthly VAT Declaration',
-    description: 'Monthly value-added tax return and payment',
-    dueDate: '20th of following month',
+    id: 'withholding-vat-pt',
+    title: 'VAT and Percentage Tax Withheld',
+    description: 'Monthly remittance of VAT or percentage tax withheld, mainly by government offices paying private suppliers',
+    dueDate: '10th of following month',
+    frequency: 'monthly',
+    category: 'withholding',
+    form: 'BIR Form 1600-VT / 1600-PT',
+    priority: 'medium',
+    applicableTo: ['Government offices', 'Withholding agents']
+  },
+  {
+    id: 'dst-monthly',
+    title: 'Documentary Stamp Tax',
+    description: 'Return and payment for documents made, signed, issued, accepted or transferred during the month',
+    dueDate: 'Within 5 days after the end of the month',
     frequency: 'monthly',
     category: 'business',
-    form: 'BIR Form 2550M',
-    priority: 'high',
-    applicableTo: ['VAT-registered businesses']
+    form: 'BIR Form 2000 / 2000-OT',
+    priority: 'medium',
+    applicableTo: ['Parties to loans, leases, mortgages, insurance policies, property sales and share transfers']
   },
 
   // Quarterly Deadlines
@@ -77,7 +89,7 @@ const TAX_DEADLINES: TaxDeadline[] = [
     id: 'percentage-tax',
     title: 'Quarterly Percentage Tax',
     description: 'Percentage tax for non-VAT registered businesses',
-    dueDate: 'Last day of month following quarter',
+    dueDate: '25 days after the end of each taxable quarter',
     frequency: 'quarterly',
     category: 'business',
     form: 'BIR Form 2551Q',
@@ -86,13 +98,13 @@ const TAX_DEADLINES: TaxDeadline[] = [
   },
   {
     id: 'vat-quarterly',
-    title: 'Quarterly VAT Summary',
-    description: 'Quarterly summary of monthly VAT declarations',
-    dueDate: '25th day of month following quarter',
+    title: 'Quarterly VAT Return',
+    description: 'Quarterly value-added tax return and payment. Replaces the monthly 2550M for transactions from January 1, 2023 (RMC 5-2023).',
+    dueDate: '25th day following the close of each taxable quarter',
     frequency: 'quarterly',
     category: 'business',
     form: 'BIR Form 2550Q',
-    priority: 'medium',
+    priority: 'high',
     applicableTo: ['VAT-registered businesses']
   },
 

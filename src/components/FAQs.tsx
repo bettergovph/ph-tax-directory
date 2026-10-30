@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { HelpCircle, Search, ChevronDown, ChevronUp, Globe, FileText } from 'lucide-react';
+import { HelpCircle, Search, Globe } from 'lucide-react';
 import { FAQS } from '@/data/faqs';
-import { Button, Badge, Card, CardHeader, CardTitle, CardDescription } from '@/components/ui';
+import { Button, Card, CardHeader, CardTitle, CardDescription } from '@/components/ui';
+import { FaqList } from '@/components/FaqList';
 
 const FAQs: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
   const [language, setLanguage] = useState<'en' | 'fil'>('en');
 
   const categories = [
@@ -14,6 +14,10 @@ const FAQs: React.FC = () => {
     { id: 'general', name: 'General' },
     { id: 'individual', name: 'Individual Tax' },
     { id: 'business', name: 'Business Tax' },
+    { id: 'vat', name: 'VAT' },
+    { id: 'percentage', name: 'Percentage Tax' },
+    { id: 'excise', name: 'Excise Tax' },
+    { id: 'dst', name: 'Documentary Stamp Tax' },
     { id: 'withholding', name: 'Withholding Tax' },
     { id: 'contributions', name: 'Contributions' },
     { id: 'property', name: 'Property Tax' }
@@ -27,13 +31,9 @@ const FAQs: React.FC = () => {
       (faq.answerFil && faq.answerFil.toLowerCase().includes(searchTerm.toLowerCase())) ||
       faq.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-    const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory || faq.taxType === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  const toggleFAQ = (faqId: string) => {
-    setExpandedFAQ(expandedFAQ === faqId ? null : faqId);
-  };
 
   return (
     <div className="space-y-6">
@@ -103,87 +103,7 @@ const FAQs: React.FC = () => {
         </div>
       </Card>
 
-      {/* FAQs */}
-      <div className="space-y-4">
-        {filteredFAQs.map((faq) => {
-          const isExpanded = expandedFAQ === faq.id;
-          const question = language === 'fil' && faq.questionFil ? faq.questionFil : faq.question;
-          const answer = language === 'fil' && faq.answerFil ? faq.answerFil : faq.answer;
-
-          return (
-            <Card key={faq.id} padding="none" className="overflow-hidden">
-              {/* Question */}
-              <button
-                onClick={() => toggleFAQ(faq.id)}
-                className="w-full p-4 sm:p-6 text-left hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 pr-2 sm:pr-4 leading-relaxed">
-                      {question}
-                    </h3>
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
-                      {faq.tags.map((tag, index) => (
-                        <Badge key={index} variant="gray" size="sm">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  {isExpanded ? (
-                    <ChevronUp className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                  )}
-                </div>
-              </button>
-
-              {/* Answer */}
-              {isExpanded && (
-                <div className="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-gray-100">
-                  <div className="pt-3 sm:pt-4">
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-4">
-                      {answer}
-                    </p>
-
-                    {/* Related Forms */}
-                    {faq.relatedForms && faq.relatedForms.length > 0 && (
-                      <div className="pt-3 sm:pt-4 border-t border-gray-100">
-                        <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-2 flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-blue-600" />
-                          Related Forms
-                        </h4>
-                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                          {faq.relatedForms.map((form, index) => (
-                            <Badge key={index} variant="blue" size="sm">
-                              BIR Form {form}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Alternative Language */}
-                    {((language === 'en' && faq.answerFil) || (language === 'fil' && faq.answer !== answer)) && (
-                      <div className="mt-3 sm:mt-4 p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Globe className="w-4 h-4 text-gray-600" />
-                          <span className="text-xs sm:text-sm font-medium text-gray-700">
-                            {language === 'en' ? 'Filipino Translation:' : 'English Translation:'}
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                          {language === 'en' ? faq.answerFil : faq.answer}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </Card>
-          );
-        })}
-      </div>
+      <FaqList items={filteredFAQs} language={language} />
 
       {filteredFAQs.length === 0 && (
         <Card padding="lg" className="text-center">

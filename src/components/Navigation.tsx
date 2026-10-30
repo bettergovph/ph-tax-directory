@@ -7,35 +7,35 @@ import { cn } from '@/utils/cn';
 const navigationItems: { id: DirectorySection; name: string; path: string; icon: React.ComponentType<{ className?: string }>; description: string }[] = [
   {
     id: 'tax-calculators',
-    name: 'Tax Calculators',
-    path: '/tax-calculators/compensation',
+    name: 'Calculators',
+    path: '/tax-calculators/income',
     icon: Calculator,
-    description: 'Calculate taxes and contributions'
+    description: 'Calculate income and transaction taxes'
   },
   {
     id: 'taxpayer-categories',
-    name: 'Taxpayer Categories',
+    name: 'Taxpayers',
     path: '/taxpayer-categories',
     icon: Users,
     description: 'Tax obligations by taxpayer type'
   },
   {
     id: 'forms-library',
-    name: 'Forms Library',
+    name: 'Forms',
     path: '/forms-library',
     icon: FileText,
     description: 'BIR forms and filing guides'
   },
   {
     id: 'filing-calendar',
-    name: 'Filing Calendar',
+    name: 'Calendar',
     path: '/filing-calendar',
     icon: Calendar,
     description: 'Tax deadlines and reminders'
   },
   {
     id: 'tax-rates',
-    name: 'Tax Rates & Tables',
+    name: 'Rates & Tables',
     path: '/tax-rates',
     icon: DollarSign,
     description: 'Current tax rates and brackets'
@@ -123,8 +123,7 @@ const Navigation: React.FC = () => {
                     title={item.description}
                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="hidden 2xl:inline whitespace-nowrap">{item.name}</span>
-                    <span className="hidden lg:inline 2xl:hidden whitespace-nowrap">{item.name.split(' ')[0]}</span>
+                    <span className="whitespace-nowrap">{item.name}</span>
                     {isActive && (
                       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full" />
                     )}
@@ -154,6 +153,8 @@ const Navigation: React.FC = () => {
 
               {/* Mobile Menu Button */}
               <button
+                aria-label="Toggle navigation"
+                aria-expanded={isMobileMenuOpen}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100/50 rounded-lg transition-all duration-200"
               >

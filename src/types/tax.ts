@@ -5,47 +5,20 @@ export interface TaxBracket {
   baseAmount: number;
 }
 
-export interface SSSBracket {
-  rangeOfCompensation: { min: number; max: number };
-  monthlySalaryCredit: { regularSS: number; mpf: number; total: number };
-  employerAmountOfContribution: { regularSS: number; mpf: number; ec: number; total: number };
-  employeeAmountOfContribution: { regularSS: number; mpf: number; total: number };
-  totalContribution: number;
-}
+export type IncomePeriod = 'annual' | 'monthly';
 
-export interface ContributionRates {
-  sss: {
-    employeeRate: number;
-    employerRate: number;
-    minSalary: number;
-    maxSalary: number;
-  };
-  philHealth: {
-    rate: number;
-    minPremium: number;
-    maxPremium: number;
-  };
-  pagibig: {
-    lowRate: number;
-    highRate: number;
-    threshold: number;
-    maxContribution: number;
-  };
-}
+export type CompensationTaxpayer = 'resident-citizen' | 'non-resident-citizen' | 'resident-alien';
 
 export interface TaxCalculation {
-  grossSalary: number;
-  annualSalary: number;
-  sssContribution: number;
-  philHealthContribution: number;
-  pagibigContribution: number;
-  totalContributions: number;
-  taxableIncome: number;
   annualTaxableIncome: number;
-  monthlyTax: number;
+  monthlyTaxEquivalent: number;
   annualTax: number;
-  netSalary: number;
-  taxBracket: string;
+  marginalRate: number;
+  effectiveRate: number;
+  bracketMinimum: number;
+  baseTax: number;
+  excessIncome: number;
+  taxOnExcess: number;
 }
 
 export interface TariffItem {
@@ -88,9 +61,11 @@ export interface CustomsCalculation {
   };
 }
 
+/** Top-level groups on the Calculators page. 'income' is the Direct group, and keeps its URL so existing links still work. */
 export type TaxType =
+  | 'income'
   | 'compensation'
-  | 'vat'
+  | 'indirect'
   | 'customs';
 
 export interface TaxTypeInfo {
@@ -103,22 +78,22 @@ export interface TaxTypeInfo {
 
 export const TAX_TYPES: TaxTypeInfo[] = [
   {
-    id: 'compensation',
-    name: 'Compensation Income Tax',
-    description: 'Tax on salaries, wages, and other compensation from employment',
-    rate: '0% - 35%',
-    applicableTo: 'Employees and workers'
+    id: 'income',
+    name: 'Direct Taxes',
+    description: 'Income tax and capital gains, with estate and donor’s tax to come',
+    rate: 'By taxpayer & income type',
+    applicableTo: 'Individuals, entities and withholding agents'
   },
   {
-    id: 'vat',
-    name: 'Value Added Tax (VAT)',
-    description: 'Tax on sale of goods and services',
-    rate: '12%',
-    applicableTo: 'VAT-registered businesses'
+    id: 'indirect',
+    name: 'Indirect Taxes',
+    description: 'VAT, percentage tax, excise tax and documentary stamp tax',
+    rate: '4 taxes',
+    applicableTo: 'Sellers, makers, importers and parties to taxable documents'
   },
   {
     id: 'customs',
-    name: 'Customs Duty & Import Tax (Beta)',
+    name: 'Customs Duties (Beta)',
     description: 'BOC Tax Estimator for imported goods via express couriers',
     rate: 'Variable',
     applicableTo: 'Importers and express shipments'

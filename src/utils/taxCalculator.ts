@@ -1,85 +1,37 @@
-import { TaxCalculation, CustomsCalculation } from '../types/tax';
-import { TAX_BRACKETS, SSS_BRACKETS, CONTRIBUTION_RATES, VAT_RATE, } from '../data/taxRules';
+import { TaxCalculation, CustomsCalculation, IncomePeriod } from '../types/tax';
+import { TAX_BRACKETS, VAT_RATE } from '../data/taxRules';
 
-export function calculateSSS(monthlySalary: number): number {
-  const bracket = SSS_BRACKETS.find(bracket =>
-    monthlySalary >= bracket.rangeOfCompensation.min &&
-    monthlySalary <= bracket.rangeOfCompensation.max
-  );
-
-  // Return found bracket or fallback to highest bracket
-  return bracket?.employeeAmountOfContribution.total ??
-    SSS_BRACKETS[SSS_BRACKETS.length - 1].employeeAmountOfContribution.total;
-}
-
-export function calculatePhilHealth(monthlySalary: number): number {
-  const incomeCeiling = 100000; // DOH/BIR-mandated ceiling
-  const cappedSalary = Math.min(monthlySalary, incomeCeiling);
-  const employeeShare = (CONTRIBUTION_RATES.philHealth.rate / 2);
-  return cappedSalary * employeeShare;
-}
-
-export function calculatePagibig(monthlySalary: number): number {
-  const rate = monthlySalary <= CONTRIBUTION_RATES.pagibig.threshold
-    ? CONTRIBUTION_RATES.pagibig.lowRate
-    : CONTRIBUTION_RATES.pagibig.highRate;
-
-  return Math.min(monthlySalary * rate, CONTRIBUTION_RATES.pagibig.maxContribution);
+function getIncomeTaxBracket(annualTaxableIncome: number) {
+  if (!Number.isFinite(annualTaxableIncome) || annualTaxableIncome < 0) {
+    throw new RangeError('Taxable income must be a finite, non-negative amount.');
+  }
+  return TAX_BRACKETS.find(bracket => annualTaxableIncome <= bracket.max)!;
 }
 
 export function calculateIncomeTax(annualTaxableIncome: number): number {
-  for (const bracket of TAX_BRACKETS) {
-    if (annualTaxableIncome <= bracket.max) {
-      const excess = Math.max(0, annualTaxableIncome - bracket.min);
-      return bracket.baseAmount + (excess * bracket.rate);
-    }
-  }
-  return 0;
+  const bracket = getIncomeTaxBracket(annualTaxableIncome);
+  return bracket.baseAmount + Math.max(0, annualTaxableIncome - bracket.min) * bracket.rate;
 }
 
-export function getTaxBracketDescription(annualTaxableIncome: number): string {
-  for (const bracket of TAX_BRACKETS) {
-    if (annualTaxableIncome <= bracket.max) {
-      if (bracket.rate === 0) {
-        return '0% Tax Rate';
-      }
-      return `${(bracket.rate * 100).toFixed(0)}% Tax Rate`;
-    }
-  }
-  return '';
-}
-
-export function calculateTax(monthlySalary: number): TaxCalculation {
-  const grossSalary = monthlySalary;
-  const annualSalary = monthlySalary * 12;
-
-  const sssContribution = calculateSSS(monthlySalary);
-  const philHealthContribution = calculatePhilHealth(monthlySalary);
-  const pagibigContribution = calculatePagibig(monthlySalary);
-  const totalContributions = sssContribution + philHealthContribution + pagibigContribution;
-
-  const taxableIncome = monthlySalary - totalContributions;
-  const annualTaxableIncome = taxableIncome * 12;
-
+// The input is already taxable compensation, after applicable exclusions.
+// A monthly input projects the same taxable compensation across all 12 months.
+export function calculateTax(taxableIncome: number, period: IncomePeriod = 'annual'): TaxCalculation {
+  const annualTaxableIncome = period === 'monthly' ? taxableIncome * 12 : taxableIncome;
+  const bracket = getIncomeTaxBracket(annualTaxableIncome);
+  const excessIncome = Math.max(0, annualTaxableIncome - bracket.min);
+  const taxOnExcess = excessIncome * bracket.rate;
   const annualTax = calculateIncomeTax(annualTaxableIncome);
-  const monthlyTax = annualTax / 12;
-
-  const netSalary = monthlySalary - totalContributions - monthlyTax;
-  const taxBracket = getTaxBracketDescription(annualTaxableIncome);
 
   return {
-    grossSalary,
-    annualSalary,
-    sssContribution,
-    philHealthContribution,
-    pagibigContribution,
-    totalContributions,
-    taxableIncome,
     annualTaxableIncome,
-    monthlyTax,
+    monthlyTaxEquivalent: annualTax / 12,
     annualTax,
-    netSalary,
-    taxBracket
+    marginalRate: bracket.rate,
+    effectiveRate: annualTaxableIncome > 0 ? annualTax / annualTaxableIncome : 0,
+    bracketMinimum: bracket.min,
+    baseTax: bracket.baseAmount,
+    excessIncome,
+    taxOnExcess,
   };
 }
 

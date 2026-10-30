@@ -1,209 +1,29 @@
-import React, { useState } from 'react';
-import { User, Building, Store, Heart, ChevronRight, Calendar, FileText, Clock, CheckCircle, Users } from 'lucide-react';
-import { TaxpayerSubcategory } from '@/types/directory';
-import { TAXPAYER_CATEGORIES } from '@/data/taxpayerCategories';
-
-const getIconComponent = (iconName: string) => {
-  switch (iconName) {
-    case 'User': return User;
-    case 'Building': return Building;
-    case 'Store': return Store;
-    case 'Heart': return Heart;
-    default: return Users;
-  }
-};
-
-const TaxpayerCategories: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
-
-  const handleCategoryClick = (categoryId: string) => {
-    if (selectedCategory === categoryId) {
-      setSelectedCategory(null);
-      setSelectedSubcategory(null);
-    } else {
-      setSelectedCategory(categoryId);
-      setSelectedSubcategory(null);
-    }
-  };
-
-  const renderSubcategoryDetails = (subcategory: TaxpayerSubcategory) => (
-    <div className="mt-4 bg-gray-50 rounded-lg p-6">
-      <div className="mb-6">
-        <h4 className="text-xl font-semibold text-gray-900 mb-2">{subcategory.name}</h4>
-        <p className="text-gray-600">{subcategory.description}</p>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Tax Obligations */}
-        <div>
-          <h5 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-blue-600" />
-            Tax Obligations
-          </h5>
-          <div className="space-y-3">
-            {subcategory.obligations.map((obligation, index) => (
-              <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
-                <div className="flex justify-between items-start mb-2">
-                  <h6 className="font-medium text-gray-900">{obligation.type}</h6>
-                  {obligation.rate && (
-                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                      {obligation.rate}
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-gray-600 mb-2">{obligation.description}</p>
-                <div className="flex items-center gap-4 text-xs text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {obligation.frequency}
-                  </span>
-                  {obligation.dueDate && (
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      Due: {obligation.dueDate}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Forms and Requirements */}
-        <div className="space-y-6">
-          {/* Required Forms */}
-          <div>
-            <h5 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-green-600" />
-              Required Forms
-            </h5>
-            <div className="space-y-2">
-              {subcategory.forms.map((form, index) => (
-                <div key={index} className="bg-green-50 border border-green-200 rounded-lg p-3">
-                  <span className="text-sm font-medium text-green-800">{form}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Requirements */}
-          <div>
-            <h5 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-orange-600" />
-              Requirements
-            </h5>
-            <ul className="space-y-2">
-              {subcategory.requirements.map((requirement, index) => (
-                <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 bg-orange-600 rounded-full mt-2 flex-shrink-0"></span>
-                  {requirement}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Examples */}
-          <div>
-            <h5 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-              <Users className="w-4 h-4 text-purple-600" />
-              Examples
-            </h5>
-            <div className="flex flex-wrap gap-2">
-              {subcategory.examples.map((example, index) => (
-                <span
-                  key={index}
-                  className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"
-                >
-                  {example}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+import { useState } from 'react';
+import { ArrowRight, Users } from 'lucide-react';
+import { CLASSIFICATION_NOTES, TAXPAYER_CATEGORIES } from '@/data/taxpayerCategories';
+import { periodLabel, REVIEWED_DATE, allowedPeriods, availableRoutes } from '@/data/incomeTax';
+import { TaxpayerKind } from '@/types/incomeTax';
+import { FormReferences, SourceLinks } from './TaxReferences';
+export default function TaxpayerCategories() {
+  const [kind,setKind]=useState<TaxpayerKind>('individual');
+  const category=TAXPAYER_CATEGORIES.find(c=>c.id===kind)!;
+  const [classification,setClassification]=useState('resident-citizen');
+  const routes=availableRoutes(kind,classification);
+  return <div className="space-y-5">
+    <header className="rounded-2xl bg-white p-5 shadow-lg sm:p-8"><p className="mb-2 text-xs font-semibold uppercase tracking-widest text-blue-700">Understand your filing</p><h1 className="flex items-center gap-3 text-2xl font-bold text-slate-950"><Users className="h-6 w-6 text-blue-600" />Taxpayer Categories</h1><p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">Taxpayer classification, income type and filing role are separate decisions. Explore the available tax treatments, periods and BIR forms for each.</p><p className="mt-3 text-xs text-slate-400">Sources reviewed {REVIEWED_DATE}</p></header>
+    <div className="rounded-2xl bg-white p-5 shadow-lg sm:p-8">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Taxpayer type">{TAXPAYER_CATEGORIES.map(c=><button key={c.id} onClick={()=>{setKind(c.id);setClassification(c.classifications[0].value);}} aria-pressed={kind===c.id} className={`rounded-lg px-4 py-2.5 text-sm font-medium ${kind===c.id ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>{c.name}</button>)}</div>
+      <p className="mt-5 text-sm leading-relaxed text-slate-600">{category.description}</p>
+      <label htmlFor="category-classification" className="mb-2 mt-5 block text-sm font-semibold text-slate-800">{kind==='withholding' ? 'Recipient classification' : 'Classification'}</label><select id="category-classification" value={classification} onChange={e=>setClassification(e.target.value)} className="w-full rounded-lg border border-slate-300 bg-white p-3 text-base text-slate-900 focus:ring-2 focus:ring-blue-300">{category.classifications.map(c=><option key={c.value} value={c.value}>{c.label}</option>)}</select>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600">{CLASSIFICATION_NOTES[classification]}</p>
+      <div className="mt-4"><SourceLinks ids={['scope','bir']} /></div>
     </div>
-  );
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <Users className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Taxpayer Categories</h2>
-            <p className="text-sm sm:text-base text-gray-600">Tax obligations and requirements by taxpayer type</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Categories */}
-      {TAXPAYER_CATEGORIES.map((category) => {
-        const IconComponent = getIconComponent(category.icon);
-        const isExpanded = selectedCategory === category.id;
-
-        return (
-          <div key={category.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-            {/* Category Header */}
-            <button
-              onClick={() => handleCategoryClick(category.id)}
-              className="w-full p-6 text-left hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <IconComponent className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900">{category.name}</h3>
-                    <p className="text-gray-600">{category.description}</p>
-                  </div>
-                </div>
-                <ChevronRight
-                  className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''
-                    }`}
-                />
-              </div>
-            </button>
-
-            {/* Subcategories */}
-            {isExpanded && (
-              <div className="border-t border-gray-200 p-6">
-                <div className="grid gap-4">
-                  {category.subcategories.map((subcategory) => (
-                    <div key={subcategory.id} className="border border-gray-200 rounded-lg">
-                      <button
-                        onClick={() => setSelectedSubcategory(
-                          selectedSubcategory === subcategory.id ? null : subcategory.id
-                        )}
-                        className="w-full p-4 text-left hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4 className="font-medium text-gray-900">{subcategory.name}</h4>
-                            <p className="text-sm text-gray-600">{subcategory.description}</p>
-                          </div>
-                          <ChevronRight
-                            className={`w-4 h-4 text-gray-400 transition-transform ${selectedSubcategory === subcategory.id ? 'rotate-90' : ''
-                              }`}
-                          />
-                        </div>
-                      </button>
-
-                      {selectedSubcategory === subcategory.id && renderSubcategoryDetails(subcategory)}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-export default TaxpayerCategories;
+    <div className="space-y-4">{routes.map(route=><article key={route.id} className="rounded-xl bg-white p-5 shadow-sm sm:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-lg font-semibold text-slate-900">{route.name}</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">{route.description}</p></div><span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-800">{route.rate}</span></div>
+      <p className="mt-3 text-xs leading-relaxed text-slate-500">Periods: {allowedPeriods({route:route.id,values:{passiveType:'interest'}}).map(p=>periodLabel(p,kind)).join(' · ')}. Eligibility and exemptions determine actual filing obligations.</p>
+      <details className="mt-4 border-t border-slate-100 pt-4"><summary className="cursor-pointer text-sm font-medium text-slate-700">Applicable form references & source</summary><div className="mt-4"><FormReferences numbers={route.forms} /></div><div className="mt-4"><SourceLinks ids={[route.source]} /></div></details>
+      <a href={`#/tax-calculators/income?taxpayer=${kind}&classification=${classification}&route=${route.id}`} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:underline">{route.id==='specialist' ? 'Review this classification' : 'Open this calculator'}<ArrowRight className="h-4 w-4" /></a>
+    </article>)}</div>
+    <p className="rounded-lg bg-blue-50 p-4 text-sm leading-relaxed text-blue-900">Business filing size, the elected 8% regime, and the corporate 20% rate have different eligibility rules. Qualified minimum-wage and other exempt income must be excluded from the relevant taxable compensation base; exempt income does not automatically remove every filing obligation.</p>
+  </div>;
+}

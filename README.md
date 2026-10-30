@@ -32,7 +32,7 @@ A comprehensive tax directory and calculator for the Philippines, featuring mode
 ## Features
 
 ### 🧮 Tax Calculators
-- **Compensation Income Tax Calculator**: Calculate monthly and annual income tax with SSS, PhilHealth, and Pag-IBIG contributions
+- **Income Tax Calculator**: Classification-dependent annual, cumulative quarterly and transaction calculations for individuals, entities and withholding agents. Includes credits, RCIT/MCIT, eligible 8% and approved incentive treatments, capital gains, selected final taxes, official BIR form links and statutory deadline references. No contribution or take-home-pay calculations.
 - **VAT Calculator**: Calculate 12% VAT for both inclusive and exclusive amounts
 
 ### 📋 Tax Directory Sections
@@ -47,7 +47,10 @@ A comprehensive tax directory and calculator for the Philippines, featuring mode
 - `npm run dev` - Start development server with hot reload
 - `npm run build` - Build for production
 - `npm run lint` - Run ESLint to check code quality
+- `npm test` - Run calculation, eligibility, period, form-routing and regression tests
 - `npm run preview` - Preview production build locally
+
+Review the [implementation notes](docs/implementation-review.md) for supported periods, verification and remaining specialist-case boundaries.
 
 ## Contributing
 

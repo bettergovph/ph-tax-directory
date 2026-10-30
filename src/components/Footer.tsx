@@ -8,11 +8,11 @@ const Footer = () => {
           {/* Left Side */}
           <div className="text-sm flex gap-4">
             <img src="https://bettergov.ph/logos/svg/BetterGov_Icon-White.svg" alt="BetterGov" width="48" height="48" />
-            <p className="font-semibold text-white mb-2">BetterGov.ph
+            <div><p className="font-semibold text-white mb-2">BetterGov.ph</p>
             <p className="text-gray-400">
               A community portal providing Philippine citizens, businesses, and visitors with information and services.
             </p>
-            </p>
+            </div>
           </div>
 
           {/* Right Side */}

@@ -23,3 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.gstack/
+output/
+*.tsbuildinfo
+
+# AI assistant config
+.claude/
+.codex/
+.cline/
+.clinerules
+.github/copilot-instructions.md
+AGENTS.md

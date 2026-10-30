@@ -1,305 +1,36 @@
-import React, { useState } from 'react';
-import { FileText, Download, Search, Filter, Calendar, Users, Building, Receipt, Clock } from 'lucide-react';
-import { BIRForm } from '@/types/directory';
-import { BIR_FORMS } from '@/data/birForms';
-
-const FormsLibrary: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedForm, setSelectedForm] = useState<BIRForm | null>(null);
-
-  const categories = [
-    { id: 'all', name: 'All Forms', icon: FileText },
-    { id: 'individual', name: 'Individual', icon: Users },
-    { id: 'business', name: 'Business', icon: Building },
-    { id: 'withholding', name: 'Withholding Tax', icon: Receipt },
-    { id: 'registration', name: 'Registration', icon: Clock },
-    { id: 'other', name: 'Other', icon: FileText }
-  ];
-
-  const filteredForms = BIR_FORMS.filter(form => {
-    const matchesSearch = form.formNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         form.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         form.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || form.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'individual': return 'blue';
-      case 'business': return 'green';
-      case 'withholding': return 'purple';
-      case 'registration': return 'orange';
-      case 'other': return 'gray';
-      default: return 'gray';
-    }
-  };
-
-  const getFrequencyIcon = (frequency?: string) => {
-    switch (frequency) {
-      case 'monthly': return '📅';
-      case 'quarterly': return '📆';
-      case 'annually': return '🗓️';
-      case 'as-needed': return '⏰';
-      default: return '📋';
-    }
-  };
-
-  const renderFormDetails = (form: BIRForm) => (
-    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
-            <span className="bg-gray-900 text-white px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap">
-              BIR Form {form.formNumber}
-            </span>
-            <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-${getCategoryColor(form.category)}-100 text-${getCategoryColor(form.category)}-800 whitespace-nowrap`}>
-              <FileText className="w-3 h-3" />
-              {form.category}
-            </div>
-            {form.frequency && (
-              <span className="text-xs sm:text-sm text-gray-600 flex items-center gap-1 whitespace-nowrap">
-                {getFrequencyIcon(form.frequency)} {form.frequency}
-              </span>
-            )}
-          </div>
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{form.title}</h3>
-          <p className="text-sm sm:text-base text-gray-600 mb-4">{form.description}</p>
-
-          {form.dueDate && (
-            <div className="flex items-center gap-2 text-xs sm:text-sm text-orange-700 mb-4">
-              <Calendar className="w-4 h-4" />
-              <span>Due: {form.dueDate}</span>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2 w-full sm:w-auto sm:ml-4 mt-3 sm:mt-0">
-          <button
-            onClick={() => window.open('https://www.bir.gov.ph', '_blank')}
-            className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium w-full sm:w-auto"
-          >
-            <Download className="w-4 h-4" />
-            Download
-          </button>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Applicable To */}
-        <div>
-          <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-            <Users className="w-4 h-4 text-blue-600" />
-            Applicable To
-          </h4>
-          <div className="space-y-2">
-            {form.applicableTo.map((item, index) => (
-              <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-2">
-                <span className="text-sm text-blue-800">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Filing Instructions */}
-        <div>
-          <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-green-600" />
-            Filing Instructions
-          </h4>
-          <ol className="space-y-2">
-            {form.instructions.map((instruction, index) => (
-              <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
-                <span className="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
-                  {index + 1}
-                </span>
-                {instruction}
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-
-      {/* Related Forms */}
-      {form.relatedForms && form.relatedForms.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-gray-200">
-          <h4 className="font-medium text-gray-900 mb-3">Related Forms</h4>
-          <div className="flex flex-wrap gap-2">
-            {form.relatedForms.map((relatedForm, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  const form = BIR_FORMS.find(f => f.formNumber === relatedForm);
-                  if (form) setSelectedForm(form);
-                }}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm transition-colors"
-              >
-                BIR Form {relatedForm}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <button
-          onClick={() => setSelectedForm(null)}
-          className="text-blue-600 hover:text-blue-800 font-medium text-sm"
-        >
-          ← Back to Forms Library
-        </button>
-      </div>
-    </div>
-  );
-
-  if (selectedForm) {
-    return renderFormDetails(selectedForm);
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
-            <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-          </div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Tax Forms Library</h2>
-            <p className="text-sm sm:text-base text-gray-600">Complete collection of BIR forms with filing guidance</p>
-          </div>
-        </div>
-
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search forms by number, title, or description..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 sm:py-2 text-base sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div className="flex gap-2">
-            <Filter className="w-5 h-5 text-gray-400 mt-2" />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2.5 sm:py-2 text-base sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              {categories.map(category => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Forms Grid */}
-      <div className="grid gap-4">
-        {filteredForms.map((form) => {
-          const color = getCategoryColor(form.category);
-
-          return (
-            <div key={form.formNumber} className="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover:shadow-xl transition-shadow cursor-pointer" onClick={() => setSelectedForm(form)}>
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0">
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
-                    <span className="bg-gray-900 text-white px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap">
-                      BIR Form {form.formNumber}
-                    </span>
-                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800 whitespace-nowrap`}>
-                      <FileText className="w-3 h-3" />
-                      {form.category}
-                    </div>
-                    {form.frequency && (
-                      <span className="text-xs sm:text-sm text-gray-600 flex items-center gap-1 whitespace-nowrap">
-                        {getFrequencyIcon(form.frequency)} {form.frequency}
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 break-words">{form.title}</h3>
-                  <p className="text-sm sm:text-base text-gray-600 mb-3 break-words">{form.description}</p>
-
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3">
-                    {form.applicableTo.slice(0, 3).map((item, index) => (
-                      <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs break-words">
-                        {item}
-                      </span>
-                    ))}
-                    {form.applicableTo.length > 3 && (
-                      <span className="text-gray-500 text-xs whitespace-nowrap">+{form.applicableTo.length - 3} more</span>
-                    )}
-                  </div>
-
-                  {form.dueDate && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-orange-700">
-                      <Calendar className="w-4 h-4 flex-shrink-0" />
-                      <span className="break-words">Due: {form.dueDate}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-2 sm:ml-4 w-full sm:w-auto">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open('https://www.bir.gov.ph', '_blank');
-                    }}
-                    className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm font-medium w-full sm:w-auto"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedForm(form);
-                    }}
-                    className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-xs sm:text-sm font-medium w-full sm:w-auto"
-                  >
-                    <FileText className="w-4 h-4" />
-                    Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {filteredForms.length === 0 && (
-        <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-          <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No forms found</h3>
-          <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
-        </div>
-      )}
-
-      {/* Additional Information */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-        <h3 className="font-medium text-blue-900 mb-2">Need Help?</h3>
-        <p className="text-sm text-blue-700 mb-3">
-          For the most up-to-date forms and detailed instructions, visit the official BIR website.
-          All forms include step-by-step filing guidance and requirements.
-        </p>
-        <a
-          href="https://www.bir.gov.ph"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm"
-        >
-          <FileText className="w-4 h-4" />
-          Visit BIR Official Website
-        </a>
-      </div>
-    </div>
-  );
-};
-
-export default FormsLibrary;
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { ArrowLeft, ExternalLink, FileText, Search } from 'lucide-react';
+import { BIR_FORMS, FORM_BY_NUMBER } from '@/data/birForms';
+import { REVIEWED_DATE } from '@/data/incomeTax';
+import { FORM_PLAIN } from '@/data/taxGlossary';
+const categories=[['all','All forms'],['individual','Individual / fiduciary'],['business','Corporate / entity'],['capital-gains','Capital gains'],['vat','VAT / percentage tax'],['excise','Excise tax'],['dst','Documentary stamp tax'],['registration','Registration'],['withholding','Withholding / information'],['certificate','Certificates']];
+const FORM_TAB: Record<string,string> = {'2550Q':'vat','2550-DS':'vat','1600-VT':'vat','2551Q':'percentage','2552':'percentage','2553':'percentage','1600-PT':'percentage'};
+const indirectTab = (category: string, number: string) => FORM_TAB[number] ?? (category==='excise' || category==='dst' ? category : undefined);
+const calculatorLink = (category: string, number: string) => { const tab=indirectTab(category,number); return tab ? `#/tax-calculators/indirect?tax=${tab}` : '#/tax-calculators/income'; };
+const calculatorName = (category: string, number: string) => ({vat:'VAT',percentage:'Percentage Tax',excise:'Excise Tax',dst:'Documentary Stamp Tax'} as Record<string,string>)[indirectTab(category,number) ?? ''] ?? 'Income Tax';
+export default function FormsLibrary() {
+  const [params,setParams]=useSearchParams();
+  const selected=FORM_BY_NUMBER[params.get('form') || ''];
+  const [search,setSearch]=useState('');
+  const [category,setCategory]=useState('all');
+  const filtered=BIR_FORMS.filter(form=>(category==='all' || form.category===category) && [form.formNumber,form.title,form.description,form.role,form.dueDate].join(' ').toLowerCase().includes(search.trim().toLowerCase()));
+  if (selected) return <article className="rounded-2xl bg-white p-5 shadow-lg sm:p-8">
+    <button onClick={()=>setParams({})} className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-blue-700"><ArrowLeft className="h-4 w-4" />Back to Forms Library</button>
+    <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="mb-2 text-sm font-bold text-blue-700">BIR Form {selected.formNumber}</p><h1 className="max-w-3xl text-2xl font-bold text-slate-950">{selected.title}</h1></div><a href={selected.downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">Open official PDF<ExternalLink className="h-4 w-4" /></a></div>
+    {FORM_PLAIN[selected.formNumber] && <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-800"><span className="font-medium">In simple words: </span>{FORM_PLAIN[selected.formNumber].what} Who uses it: {FORM_PLAIN[selected.formNumber].who}</p>}<p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">{selected.description}</p>
+    <dl className="mt-6 grid gap-5 border-y border-slate-100 py-5 sm:grid-cols-2"><div><dt className="text-xs font-semibold uppercase tracking-wider text-slate-400">Who files / issues</dt><dd className="mt-2 text-sm text-slate-800">{selected.role}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-wider text-slate-400">Period & statutory deadline</dt><dd className="mt-2 text-sm text-slate-800">{selected.dueDate}</dd></div></dl>
+    <h2 className="mb-3 mt-6 font-semibold text-slate-900">Eligibility & calculation guidance</h2><ol className="ml-5 list-decimal space-y-3 text-sm leading-relaxed text-slate-600">{selected.instructions.map(item=><li key={item}>{item}</li>)}</ol>
+    <div className="mt-6 flex flex-wrap gap-4"><a href={selected.guidanceUrl || selected.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-blue-700 underline">Official instructions / catalogue</a><a href={calculatorLink(selected.category, selected.formNumber)} className="text-sm font-medium text-blue-700 underline">{calculatorName(selected.category, selected.formNumber)} Calculator</a></div>
+    {selected.relatedForms?.length ? <div className="mt-6 border-t border-slate-100 pt-5"><h2 className="mb-3 text-sm font-semibold text-slate-800">Related forms</h2><div className="flex flex-wrap gap-2">{selected.relatedForms.map(number=><button key={number} onClick={()=>setParams({form:number})} className="rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700 hover:bg-slate-200">BIR {number}</button>)}</div></div> : null}
+    <p className="mt-6 text-xs leading-relaxed text-slate-500">References reviewed {selected.verifiedDate}. Check current filing-channel support and applicable holiday or extension issuances. Older PDFs may retain superseded rates; use the governing issuance for the selected period.</p>
+  </article>;
+  return <div className="space-y-5">
+    <header className="rounded-2xl bg-white p-5 shadow-lg sm:p-8"><p className="mb-2 text-xs font-semibold uppercase tracking-widest text-blue-700">Returns, remittances & evidence</p><h1 className="text-2xl font-bold text-slate-950">BIR Forms Library</h1><p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">{BIR_FORMS.length} official BIR forms, with filing roles, eligibility and period guidance. Certificates and withholding-agent returns are identified separately from your own return. VAT, percentage tax and registration forms are included.</p><p className="mt-3 text-xs text-slate-400">References reviewed {REVIEWED_DATE}</p>
+      <div className="mt-6 grid gap-3 sm:grid-cols-[1fr_auto]"><div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><label htmlFor="form-search" className="sr-only">Search BIR forms</label><input id="form-search" type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search number, income type or filing role" className="w-full rounded-lg border border-slate-300 py-2.5 pl-9 pr-3 text-base focus:ring-2 focus:ring-blue-300" /></div><label className="sr-only" htmlFor="form-category">Form category</label><select id="form-category" value={category} onChange={e=>setCategory(e.target.value)} className="rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base">{categories.map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></div>
+    </header>
+    <p className="text-sm text-slate-500" aria-live="polite">{filtered.length} form{filtered.length===1 ? '' : 's'} found</p>
+    <div className="grid gap-4 sm:grid-cols-2">{filtered.map(form=><article key={form.formNumber} className="flex flex-col rounded-xl bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-blue-700"><FileText className="h-4 w-4" /><span className="text-sm font-bold">BIR {form.formNumber}</span><span className="ml-auto text-xs font-normal text-slate-400">{form.category==='certificate' ? 'Certificate' : form.frequency}</span></div><h2 className="text-base font-semibold text-slate-900">{form.title}</h2>{FORM_PLAIN[form.formNumber] && <p className="mt-2 text-sm leading-relaxed text-slate-800"><span className="font-medium">In simple words: </span>{FORM_PLAIN[form.formNumber].what} <span className="text-slate-600">Who uses it: {FORM_PLAIN[form.formNumber].who}</span></p>}<p className="mt-2 text-sm leading-relaxed text-slate-600">{form.description}</p><p className="mt-3 text-xs font-medium text-slate-500">{form.role}</p><p className="mt-2 text-xs leading-relaxed text-slate-500">{form.dueDate}</p><div className="mt-auto flex flex-wrap gap-4 pt-5"><a href={form.downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:underline">Official PDF<ExternalLink className="h-3.5 w-3.5" /></a><button onClick={()=>setParams({form:form.formNumber})} className="text-sm text-slate-600 underline">Eligibility & details</button></div></article>)}</div>
+    {!filtered.length && <div className="rounded-xl bg-white p-8 text-center"><h2 className="font-semibold text-slate-800">No matching forms</h2><p className="mt-2 text-sm text-slate-500">Try a form number, another search term or a different category.</p><button onClick={()=>{setSearch('');setCategory('all');}} className="mt-4 text-sm text-blue-700 underline">Clear search and filters</button></div>}
+  </div>;
+}
