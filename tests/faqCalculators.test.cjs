@@ -33,3 +33,11 @@ test('FAQs only name known calculators, and each tax topic links its own', () =>
   assert.deepEqual(faqCalculators(FAQS.find(f => f.id === 'dst-loan')), ['dst']);
   assert.deepEqual(faqCalculators(FAQS.find(f => f.id === 'what-is-tin')), []);
 });
+
+test('every FAQ related form exists in the forms library', () => {
+  const src = require('node:fs').readFileSync(path.join(root, 'src/data/birForms.ts'), 'utf8');
+  const forms = new Set([...src.matchAll(/"formNumber": "([^"]+)"/g)].map(m => m[1]));
+  for (const faq of FAQS) {
+    for (const form of faq.relatedForms ?? []) assert.ok(forms.has(form), `${faq.id}: unknown form ${form}`);
+  }
+});
