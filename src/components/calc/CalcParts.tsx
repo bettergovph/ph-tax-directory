@@ -14,7 +14,7 @@ const FieldNotes = ({ id, error, hint }: { id: string; error?: string; hint?: st
   {hint && <GlossaryText text={hint} className="mt-1 text-xs leading-relaxed text-gray-500" />}
 </>;
 
-/** A peso amount box. Strips anything that is not a digit, comma or dot. */
+/** A peso amount box. Passes the typed text through unchanged so the validators can reject invalid input such as "-100" or "1e5" instead of silently rewriting it. */
 export function MoneyInput({ label, item, value, onChange, error, hint, placeholder = '0.00' }: {
   label: string; item?: string; value: string; onChange: (value: string) => void; error?: string; hint?: string; placeholder?: string;
 }) {
@@ -32,7 +32,7 @@ export function MoneyInput({ label, item, value, onChange, error, hint, placehol
   </div>;
 }
 
-/** A plain number box, such as litres, packs, days or years. */
+/** A plain number box, such as litres, packs, days or years. Passes the typed text through unchanged so the validators report invalid input. */
 export function NumberInput({ label, value, onChange, error, hint, placeholder = '0', unit }: {
   label: string; value: string; onChange: (value: string) => void; error?: string; hint?: string; placeholder?: string; unit?: string;
 }) {
