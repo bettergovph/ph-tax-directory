@@ -24,7 +24,7 @@ export function MoneyInput({ label, item, value, onChange, error, hint, placehol
     <div className="relative">
       <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" aria-hidden="true">₱</span>
       <input id={id} type="text" inputMode="decimal" autoComplete="off" value={value} placeholder={placeholder}
-        onChange={e => onChange(e.target.value.replace(/[^0-9.,]/g, ''))}
+        onChange={e => onChange(e.target.value)}
         aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined}
         className={`${controlClass} pl-8 ${error ? 'border-red-400' : ''}`} />
     </div>
@@ -41,7 +41,7 @@ export function NumberInput({ label, value, onChange, error, hint, placeholder =
     <FieldLabel id={id} label={label} />
     <div className="relative">
       <input id={id} type="text" inputMode="decimal" autoComplete="off" value={value} placeholder={placeholder}
-        onChange={e => onChange(e.target.value.replace(/[^0-9.,]/g, ''))}
+        onChange={e => onChange(e.target.value)}
         aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined}
         className={`${controlClass} ${unit ? 'pr-20' : ''} ${error ? 'border-red-400' : ''}`} />
       {unit && <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500" aria-hidden="true">{unit}</span>}
