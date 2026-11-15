@@ -6,11 +6,11 @@ export const FAQS: FAQ[] = [
     id: 'what-is-tin',
     question: 'What is a TIN and how do I get one?',
     questionFil: 'Ano ang TIN at paano ko makakakuha?',
-    answer: 'A Tax Identification Number (TIN) is a unique number assigned by the BIR to identify taxpayers. To get a TIN, you need to register with the BIR by submitting the appropriate registration form (1901 for individuals, 1902 for corporations) along with required documents to your assigned Revenue District Office (RDO).',
-    answerFil: 'Ang Tax Identification Number (TIN) ay natatanging numero na ibinibigay ng BIR para sa mga nagbabayad ng buwis. Para makakuha ng TIN, kailangan mong mag-register sa BIR sa pamamagitan ng pagsusumite ng tamang registration form (1901 para sa mga indibidwal, 1902 para sa mga korporasyon) kasama ang mga kinakailangang dokumento sa inyong assigned Revenue District Office (RDO).',
+    answer: 'A Tax Identification Number (TIN) is a unique number assigned by the BIR to identify taxpayers. To get a TIN, you need to register with the BIR by submitting the appropriate registration form (1901 for self-employed individuals, 1903 for corporations) along with required documents to your assigned Revenue District Office (RDO).',
+    answerFil: 'Ang Tax Identification Number (TIN) ay natatanging numero na ibinibigay ng BIR para sa mga nagbabayad ng buwis. Para makakuha ng TIN, kailangan mong mag-register sa BIR sa pamamagitan ng pagsusumite ng tamang registration form (1901 para sa mga self-employed na indibidwal, 1903 para sa mga korporasyon) kasama ang mga kinakailangang dokumento sa inyong assigned Revenue District Office (RDO).',
     category: 'general',
     tags: ['TIN', 'registration', 'BIR'],
-    relatedForms: ['1901', '1902']
+    relatedForms: ['1901', '1903']
   },
   {
     id: 'vat-vs-percentage-tax',
@@ -33,7 +33,7 @@ export const FAQS: FAQ[] = [
     answerFil: 'Ang annual income tax returns ay dapat i-file bago mag-April 15 ng taong sumunod sa taxable year. Halimbawa, ang inyong 2024 income tax return ay dapat i-file bago mag-April 15, 2025. Kung ang deadline ay nakatapat sa weekend o holiday, ito ay na-extend sa susunod na business day.',
     category: 'individual',
     tags: ['annual return', 'deadline', 'filing'],
-    relatedForms: ['1700', '1701', '1702']
+    relatedForms: ['1700', '1701', '1702-RT', '1702-EX', '1702-MX']
   },
   {
     id: 'withholding-tax-explained',
@@ -44,7 +44,7 @@ export const FAQS: FAQ[] = [
     answerFil: 'Ang withholding tax ay buwis na nakakaltas sa pinagmulan ng mga bayad sa mga indibidwal o negosyo. Ang nagbabayad (employer, client, o negosyo) ang nangakaltas ng buwis at nagrremit nito sa BIR para sa taong tumatanggap ng bayad. May iba\'t ibang uri: creditable withholding tax (maaaring gamitin bilang tax credit) at final withholding tax (final na buwis sa passive income).',
     category: 'withholding',
     tags: ['withholding tax', 'creditable', 'final', 'employer'],
-    relatedForms: ['1601C', '1601E', '1601F']
+    relatedForms: ['1601-C', '1601-EQ', '1601-FQ']
   },
   {
     id: 'sss-philhealth-pagibig-rates',
@@ -76,7 +76,7 @@ export const FAQS: FAQ[] = [
     answerFil: 'Ang quarterly filing (bawat 3 buwan) ay kinakailangan para sa mga self-employed at negosyo para magbayad ng buwis sa kasalukuyang kita. Ang annual filing ay buod ng buong taong kita at buwis. Ang quarterly payments ay naka-credit sa inyong annual tax liability. Kung mas marami kayong nabayad quarterly kaysa sa annual tax ninyo, maaari kayong makatanggap ng refund.',
     category: 'business',
     tags: ['quarterly', 'annual', 'filing', 'self-employed'],
-    relatedForms: ['1701Q', '1701', '1702Q', '1702']
+    relatedForms: ['1701Q', '1701', '1702Q', '1702-RT', '1702-EX', '1702-MX']
   },
   {
     id: 'capital-gains-tax-real-property',
@@ -460,6 +460,6 @@ export const FAQS: FAQ[] = [
     answerFil: 'Mga penalties para sa late filing: 25% surcharge sa tax due para sa pag-file ng isang araw hanggang 30 araw na late, 50% surcharge para sa pag-file ng mahigit 30 araw na late, plus 20% interest per annum sa hindi nabayarang halaga. May compromise penalty din na maaaring mas mababa kung kusang mag-file bago ma-audit.',
     category: 'general',
     tags: ['penalties', 'late filing', 'surcharge', 'interest'],
-    relatedForms: ['1700', '1701', '1702']
+    relatedForms: ['1700', '1701', '1702-RT', '1702-EX', '1702-MX']
   }
 ];
