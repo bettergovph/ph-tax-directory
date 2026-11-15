@@ -88,10 +88,58 @@ export interface CustomsCalculation {
   };
 }
 
+export type FilingPeriod = 'quarterly' | 'yearly';
+
+export interface FreelancerCalculation {
+  grossSales: number;
+  filingPeriod: FilingPeriod;
+  isEligibleFor8Percent: boolean;
+  isVATRequired: boolean;
+  incomeTaxOptions: {
+    graduatedTax: {
+      grossSales: number;
+      deductions: number;
+      taxableIncome: number;
+      incomeTax: number;
+      totalTax: number;
+      netIncome: number;
+    };
+    flatTax8Percent: {
+      grossSales: number;
+      exemption: number;
+      taxableAmount: number;
+      incomeTax: number;
+      totalTax: number;
+      netIncome: number;
+    } | null;
+  };
+  otherTaxes: {
+    percentageTax: {
+      applicable: boolean;
+      rate: number;
+      amount: number;
+    };
+    vat: {
+      applicable: boolean;
+      rate: number;
+      amount: number;
+    };
+  };
+  recommended: 'graduatedTax' | 'flatTax8Percent';
+  summary: {
+    method: string;
+    totalIncomeTax: number;
+    totalOtherTax: number;
+    totalAllTaxes: number;
+    netIncome: number;
+  };
+}
+
 export type TaxType =
   | 'compensation'
   | 'vat'
-  | 'customs';
+  | 'customs'
+  | 'freelancer';
 
 export interface TaxTypeInfo {
   id: TaxType;
@@ -122,5 +170,12 @@ export const TAX_TYPES: TaxTypeInfo[] = [
     description: 'BOC Tax Estimator for imported goods via express couriers',
     rate: 'Variable',
     applicableTo: 'Importers and express shipments'
+  },
+  {
+    id: 'freelancer',
+    name: 'Freelancer Tax Calculator (Beta)',
+    description: 'Income tax options, percentage tax, VAT, and filing period',
+    rate: '8% - 35%',
+    applicableTo: 'Freelancers and self-employed'
   }
 ];
